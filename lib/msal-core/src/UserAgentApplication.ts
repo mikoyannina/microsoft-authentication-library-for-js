@@ -1252,12 +1252,12 @@ protected getCachedTokenInternal(scopes : Array<string> , user: User): CacheResu
           }
         }
         else {
-            if (!authority) {//Cache result can return null if cache is empty. In that case, set authority to default value if no authority is passed to the api.
-                authenticationRequest.authorityInstance = this.authorityInstance;
-            }
             this._logger.verbose("Token is not in cache for scope:" + scope);
           }
 
+        if (!authenticationRequest.authorityInstance) {//Cache result can return null if cache is empty. In that case, set authority to default value if no authority is passed to the api.
+            authenticationRequest.authorityInstance = authority ? AuthorityFactory.CreateInstance(authority, this.validateAuthority) : this.authorityInstance;
+        }
           // cache miss
           return authenticationRequest.authorityInstance.ResolveEndpointsAsync()
           .then(() => {
